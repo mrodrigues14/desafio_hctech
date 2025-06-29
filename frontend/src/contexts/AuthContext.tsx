@@ -19,11 +19,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Verificar se há token salvo no localStorage
     const token = localStorage.getItem('auth_token');
     if (token) {
-      // Você pode fazer uma verificação adicional aqui se necessário
-      // Por enquanto, vamos assumir que o token é válido
       const userData = localStorage.getItem('user_data');
       if (userData) {
         setUser(JSON.parse(userData));

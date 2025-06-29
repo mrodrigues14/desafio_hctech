@@ -22,11 +22,6 @@ export default function CarDetailPage() {
   const carId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
-
     if (!carId || isNaN(Number(carId))) {
       setError('ID do carro inválido');
       setLoading(false);
@@ -34,13 +29,13 @@ export default function CarDetailPage() {
     }
 
     loadCar();
-  }, [carId, isAuthenticated]);
+  }, [carId]);
 
   const loadCar = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await apiService.getCar(Number(carId));
+      const data = await apiService.getCarPublic(Number(carId));
       setCar(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar carro');
@@ -55,10 +50,6 @@ export default function CarDetailPage() {
       currency: 'BRL',
     }).format(price);
   };
-
-  if (!isAuthenticated) {
-    return null; // Vai redirecionar para login
-  }
 
   if (loading) {
     return <Loading size="lg" text="Carregando detalhes do carro..." />;
@@ -104,7 +95,6 @@ export default function CarDetailPage() {
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="md:flex">
-          {/* Imagem */}
           <div className="md:w-1/2">
             <div className="relative h-64 md:h-96 w-full">
               <Image
@@ -120,7 +110,6 @@ export default function CarDetailPage() {
             </div>
           </div>
 
-          {/* Detalhes */}
           <div className="md:w-1/2 p-8">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -153,14 +142,7 @@ export default function CarDetailPage() {
               </div>
             </div>
 
-            <div className="mt-8 space-y-3">
-              <Button 
-                className="w-full"
-                onClick={() => router.push('/gestao')}
-              >
-                Gerenciar Carros
-              </Button>
-              
+            <div className="mt-8 space-y-3">  
               <Button 
                 variant="outline" 
                 className="w-full"

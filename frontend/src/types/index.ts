@@ -28,6 +28,16 @@ export interface User {
   username: string;
 }
 
+export interface CreateUserDto {
+  username: string;
+  password: string;
+}
+
+export interface UpdateUserDto {
+  username?: string;
+  password?: string;
+}
+
 export interface LoginDto {
   username: string;
   password: string;

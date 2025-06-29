@@ -6,7 +6,8 @@ API REST desenvolvida com NestJS para gerenciamento de carros com autenticação
 ## Funcionalidades
 - ✅ Autenticação JWT com usuário mockado
 - ✅ CRUD completo de carros
-- ✅ Rotas protegidas
+- ✅ Visualização pública de carros (sem autenticação)
+- ✅ Rotas de gerenciamento protegidas por autenticação
 - ✅ Validações apropriadas
 - ✅ Mensagens de erro/sucesso adequadas
 
@@ -48,15 +49,10 @@ Fazer login e obter token JWT
 }
 ```
 
-### Carros (Rotas Protegidas - Requer Token)
+### Carros
 
-Para todas as rotas abaixo, incluir o header:
-```
-Authorization: Bearer {token}
-```
-
-#### GET /cars
-Listar todos os carros
+#### GET /cars (Público)
+Listar todos os carros - Não requer autenticação
 
 **Response:**
 ```json
@@ -72,8 +68,15 @@ Listar todos os carros
 ]
 ```
 
-#### GET /cars/:id
-Obter um carro específico
+#### GET /cars/:id (Público)
+Obter um carro específico - Não requer autenticação
+
+### Carros - Gerenciamento (Rotas Protegidas - Requer Token)
+
+Para todas as rotas de gerenciamento abaixo, incluir o header:
+```
+Authorization: Bearer {token}
+```
 
 #### POST /cars
 Criar um novo carro
@@ -112,9 +115,14 @@ Remover um carro
 
 ## Como Usar
 
+### Visualização Pública
+1. Inicie o servidor: `npm run start:dev`
+2. Acesse `GET /cars` ou `GET /cars/:id` diretamente - não é necessário autenticação
+
+### Gerenciamento (Requer Autenticação)
 1. Inicie o servidor: `npm run start:dev`
 2. Faça login em `POST /auth/login` para obter o token
-3. Use o token no header `Authorization: Bearer {token}` para acessar as rotas de carros
+3. Use o token no header `Authorization: Bearer {token}` para acessar as rotas de gerenciamento (POST, PATCH, DELETE)
 
 ## Validações
 

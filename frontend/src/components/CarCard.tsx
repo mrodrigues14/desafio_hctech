@@ -20,9 +20,9 @@ export function CarCard({ car, showActions = false, onEdit, onDelete }: CarCardP
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 border border-gray-200">
       <Link href={`/carros/${car.id}`} className="block">
-        <div className="relative h-48 w-full">
+        <div className="relative h-48 w-full overflow-hidden">
           <Image
             src={car.imagemUrl}
             alt={`${car.marca} ${car.modelo}`}
@@ -38,28 +38,32 @@ export function CarCard({ car, showActions = false, onEdit, onDelete }: CarCardP
       </Link>
       
       <div className="p-4">
-        <Link href={`/carros/${car.id}`} className="block mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+        <Link href={`/carros/${car.id}`} className="block mb-3">
+          <h3 className="text-lg font-semibold text-gray-900 hover:text-gray-700 transition-colors duration-200">
             {car.marca} {car.modelo}
           </h3>
         </Link>
         
-        <div className="space-y-1 text-sm text-gray-600 mb-3">
-          <p><span className="font-medium">Cor:</span> {car.cor}</p>
-          <p className="text-lg font-bold text-green-600">{formatPrice(car.valor)}</p>
+        <div className="space-y-2 mb-4">
+          <p className="text-sm text-gray-600">
+            <span className="font-medium">Cor:</span> {car.cor}
+          </p>
+          <p className="text-xl font-bold text-gray-900">
+            {formatPrice(car.valor)}
+          </p>
         </div>
 
         {showActions && (
-          <div className="flex gap-2 pt-3 border-t">
+          <div className="flex gap-2 pt-3 border-t border-gray-200">
             <button
               onClick={() => onEdit?.(car)}
-              className="flex-1 px-3 py-1.5 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
+              className="flex-1 px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors duration-200 font-medium"
             >
               Editar
             </button>
             <button
               onClick={() => onDelete?.(car.id)}
-              className="flex-1 px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors"
+              className="flex-1 px-3 py-2 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors duration-200 font-medium"
             >
               Excluir
             </button>

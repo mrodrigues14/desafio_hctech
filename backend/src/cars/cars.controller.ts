@@ -14,11 +14,11 @@ import { CreateCarDto, UpdateCarDto } from './car.interface';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('cars')
-@UseGuards(JwtAuthGuard)
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() createCarDto: CreateCarDto) {
     return this.carsService.create(createCarDto);
   }
@@ -34,6 +34,7 @@ export class CarsController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCarDto: UpdateCarDto,
@@ -42,6 +43,7 @@ export class CarsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id', ParseIntPipe) id: number) {
     this.carsService.remove(id);
     return { message: 'Carro removido com sucesso' };
