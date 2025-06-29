@@ -20,32 +20,32 @@ describe('Loading', () => {
   it('should apply small size styles', () => {
     render(<Loading size="sm" />)
     
-    const spinner = screen.getByRole('status').querySelector('svg')
-    expect(spinner).toHaveClass('h-4')
+    const spinner = screen.getByRole('status').querySelector('div')
     expect(spinner).toHaveClass('w-4')
+    expect(spinner).toHaveClass('h-4')
   })
 
   it('should apply medium size styles by default', () => {
     render(<Loading />)
     
-    const spinner = screen.getByRole('status').querySelector('svg')
-    expect(spinner).toHaveClass('h-8')
+    const spinner = screen.getByRole('status').querySelector('div')
     expect(spinner).toHaveClass('w-8')
+    expect(spinner).toHaveClass('h-8')
   })
 
   it('should apply large size styles', () => {
     render(<Loading size="lg" />)
     
-    const spinner = screen.getByRole('status').querySelector('svg')
-    expect(spinner).toHaveClass('h-12')
+    const spinner = screen.getByRole('status').querySelector('div')
     expect(spinner).toHaveClass('w-12')
+    expect(spinner).toHaveClass('h-12')
   })
 
   it('should have accessibility attributes', () => {
     render(<Loading />)
     
     const status = screen.getByRole('status')
-    expect(status).toHaveAttribute('aria-label', 'Carregando')
+    expect(status).toHaveAttribute('aria-label', 'Carregando...')
   })
 
   it('should apply custom aria-label when custom text is provided', () => {
@@ -59,7 +59,7 @@ describe('Loading', () => {
   it('should have spinning animation', () => {
     render(<Loading />)
     
-    const spinner = screen.getByRole('status').querySelector('svg')
+    const spinner = screen.getByRole('status').querySelector('div')
     expect(spinner).toHaveClass('animate-spin')
   })
 

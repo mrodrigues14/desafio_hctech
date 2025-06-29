@@ -4,9 +4,15 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Car, User, CreateCarDto, UpdateCarDto, CreateUserDto, UpdateUserDto } from '@/types';
 import { apiService } from '@/services/api';
+import { getCarBrands, getCarColors } from '@/services/carData';
 import { Loading } from '@/components/ui/Loading';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { Button } from '@/components/ui/Button';
+import { ImageUpload } from '@/components/ui/ImageUpload';
+import { MultipleImageUpload } from '@/components/ui/MultipleImageUpload';
+import { Autocomplete } from '@/components/ui/Autocomplete';
+import { CurrencyInput } from '@/components/ui/CurrencyInput';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
 
 type TabType = 'carros' | 'usuarios';
@@ -26,27 +32,64 @@ export default function GestaoPage() {
   const { user: currentUser } = useAuth();
 
   useEffect(() => {
-    loadData();
+    loadInitialData();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'carros' && cars.length === 0) {
+      loadCars();
+    } else if (activeTab === 'usuarios' && users.length === 0) {
+      loadUsers();
+    }
   }, [activeTab]);
 
-  const loadData = async () => {
+  const loadInitialData = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      if (activeTab === 'carros') {
-        const carsData = await apiService.getCars();
-        setCars(carsData);
-      } else {
-        const usersData = await apiService.getUsers();
-        setUsers(usersData);
-      }
+      // Carregar carros e usuários simultaneamente
+      const [carsData, usersData] = await Promise.all([
+        apiService.getCars(),
+        apiService.getUsers()
+      ]);
+      
+      setCars(carsData);
+      setUsers(usersData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar dados');
     } finally {
       setLoading(false);
     }
   };
+
+  const loadCars = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const carsData = await apiService.getCars();
+      setCars(carsData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar carros');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const usersData = await apiService.getUsers();
+      setUsers(usersData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar usuários');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadData = loadInitialData;
 
   const handleDeleteCar = async (id: number) => {
     if (!confirm('Tem certeza que deseja deletar este carro?')) return;
@@ -75,8 +118,9 @@ export default function GestaoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <ProtectedRoute requireAdmin={true}>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex mb-6" aria-label="Breadcrumb">
           <ol className="inline-flex items-center space-x-1 md:space-x-3">
@@ -102,16 +146,29 @@ export default function GestaoPage() {
           </ol>
         </nav>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Painel de Gestão</h1>
-          <p className="text-gray-600">
-            Gerencie carros e usuários do sistema
-          </p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Painel de Gestão</h1>
+            <p className="text-gray-600">
+              Gerencie carros e usuários do sistema
+            </p>
+          </div>
+          <div>
+            <Link 
+              href="/gestao/dashboard" 
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+              Dashboard Analytics
+            </Link>
+          </div>
         </div>
 
         {error && (
           <div className="mb-6">
-            <ErrorMessage message={error} onRetry={loadData} />
+            <ErrorMessage message={error} onRetry={loadInitialData} />
           </div>
         )}
 
@@ -215,6 +272,7 @@ export default function GestaoPage() {
         )}
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
 
@@ -342,7 +400,7 @@ function UsersTab({ users, currentUser, onEdit, onDelete, onAdd }: UsersTabProps
                 Nome de Usuário
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+                Roles
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Ações
@@ -372,11 +430,11 @@ function UsersTab({ users, currentUser, onEdit, onDelete, onAdd }: UsersTabProps
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    user.id === 1 
+                    user.role === 'admin' 
                       ? 'bg-purple-100 text-purple-800' 
                       : 'bg-green-100 text-green-800'
                   }`}>
-                    {user.id === 1 ? 'Administrador' : 'Usuário'}
+                    {user.role === 'admin' ? 'Administrador' : 'Usuário'}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
@@ -387,7 +445,7 @@ function UsersTab({ users, currentUser, onEdit, onDelete, onAdd }: UsersTabProps
                   >
                     Editar
                   </Button>
-                  {user.id !== 1 && (
+                  {user.role !== 'admin' && (
                     <Button 
                       variant="outline" 
                       size="sm"
@@ -418,11 +476,31 @@ function CarModal({ car, onClose, onSuccess }: CarModalProps) {
     modelo: car?.modelo || '',
     marca: car?.marca || '',
     imagemUrl: car?.imagemUrl || '',
+    imagens: car?.imagens || [],
     cor: car?.cor || '',
     valor: car?.valor || 0,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [carBrands, setCarBrands] = useState<string[]>([]);
+  const [carColors, setCarColors] = useState<string[]>([]);
+
+  // Carregar dados de marcas e cores
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [brands, colors] = await Promise.all([
+          getCarBrands(),
+          getCarColors()
+        ]);
+        setCarBrands(brands);
+        setCarColors(colors);
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      }
+    };
+    loadData();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -430,11 +508,17 @@ function CarModal({ car, onClose, onSuccess }: CarModalProps) {
     setError(null);
 
     try {
+      // Garantir que imagemUrl está definida se há imagens
+      const submitData = {
+        ...formData,
+        imagemUrl: formData.imagemUrl || (formData.imagens && formData.imagens.length > 0 ? formData.imagens[0] : '')
+      };
+
       let result: Car;
       if (car) {
-        result = await apiService.updateCar(car.id, formData);
+        result = await apiService.updateCar(car.id, submitData);
       } else {
-        result = await apiService.createCar(formData);
+        result = await apiService.createCar(submitData);
       }
       onSuccess(result);
     } catch (err) {
@@ -445,10 +529,10 @@ function CarModal({ car, onClose, onSuccess }: CarModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div className="mt-3">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="fixed inset-0 backdrop-blur-md bg-white bg-opacity-20 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+      <div className="relative w-full max-w-md bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-200/50">
+        <div className="p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             {car ? 'Editar Carro' : 'Adicionar Carro'}
           </h3>
           
@@ -458,71 +542,67 @@ function CarModal({ car, onClose, onSuccess }: CarModalProps) {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Modelo
               </label>
               <input
                 type="text"
                 value={formData.modelo}
                 onChange={(e) => setFormData({ ...formData, modelo: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+                placeholder="Ex: Civic, Corolla, Focus"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Marca
-              </label>
-              <input
-                type="text"
+              <Autocomplete
+                label="Marca"
                 value={formData.marca}
-                onChange={(e) => setFormData({ ...formData, marca: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                required
+                onChange={(value) => setFormData({ ...formData, marca: value })}
+                options={carBrands}
+                placeholder="Ex: Honda, Toyota, Ford"
+                disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                URL da Imagem
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Imagens do Carro
               </label>
-              <input
-                type="url"
-                value={formData.imagemUrl}
-                onChange={(e) => setFormData({ ...formData, imagemUrl: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                required
+              <MultipleImageUpload
+                currentImages={formData.imagens}
+                onImagesUploaded={(imageUrls) => {
+                  setFormData({ 
+                    ...formData, 
+                    imagens: imageUrls,
+                    imagemUrl: imageUrls.length > 0 ? imageUrls[0] : formData.imagemUrl
+                  });
+                }}
+                disabled={loading}
+                maxImages={5}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Cor
-              </label>
-              <input
-                type="text"
+              <Autocomplete
+                label="Cor"
                 value={formData.cor}
-                onChange={(e) => setFormData({ ...formData, cor: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                required
+                onChange={(value) => setFormData({ ...formData, cor: value })}
+                options={carColors}
+                placeholder="Ex: Preto, Branco, Prata"
+                disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Valor (R$)
-              </label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
+              <CurrencyInput
+                label="Valor (R$)"
                 value={formData.valor}
-                onChange={(e) => setFormData({ ...formData, valor: Number(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                required
+                onChange={(value) => setFormData({ ...formData, valor: value })}
+                disabled={loading}
               />
             </div>
 
@@ -561,6 +641,7 @@ function UserModal({ user, onClose, onSuccess }: UserModalProps) {
   const [formData, setFormData] = useState<CreateUserDto>({
     username: user?.username || '',
     password: '',
+    role: user?.role || 'user',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -573,7 +654,10 @@ function UserModal({ user, onClose, onSuccess }: UserModalProps) {
     try {
       let result: User;
       if (user) {
-        const updateData: UpdateUserDto = { username: formData.username };
+        const updateData: UpdateUserDto = { 
+          username: formData.username,
+          role: formData.role 
+        };
         if (formData.password) {
           updateData.password = formData.password;
         }
@@ -590,9 +674,9 @@ function UserModal({ user, onClose, onSuccess }: UserModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-        <div className="mt-3">
+    <div className="fixed inset-0 backdrop-blur-md bg-white bg-opacity-20 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+      <div className="relative w-full max-w-md bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-200/50 p-6">
+        <div>
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             {user ? 'Editar Usuário' : 'Adicionar Usuário'}
           </h3>
@@ -612,7 +696,8 @@ function UserModal({ user, onClose, onSuccess }: UserModalProps) {
                 type="text"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
+                placeholder="Digite o nome de usuário"
                 required
               />
             </div>
@@ -625,10 +710,24 @@ function UserModal({ user, onClose, onSuccess }: UserModalProps) {
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-gray-900 placeholder-gray-400 bg-white/80 backdrop-blur-sm"
                 required={!user}
                 placeholder={user ? 'Nova senha (opcional)' : 'Digite a senha'}
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Role
+              </label>
+              <select
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'user' })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 text-gray-900 bg-white/80 backdrop-blur-sm"
+              >
+                <option value="user">Usuário</option>
+                <option value="admin">Administrador</option>
+              </select>
             </div>
 
             <div className="flex justify-end space-x-3 pt-4">

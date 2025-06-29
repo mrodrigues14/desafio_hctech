@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/Button';
 
 export function Navbar() {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isAdmin } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
@@ -62,15 +62,25 @@ export function Navbar() {
             
             {isAuthenticated ? (
               <>
-                <Link 
-                  href="/gestao" 
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors duration-200"
-                >
-                  Gestão
-                </Link>
+                {isAdmin && (
+                  <>
+                    <Link 
+                      href="/gestao" 
+                      className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors duration-200"
+                    >
+                      Gestão
+                    </Link>
+                    <Link 
+                      href="/gestao/dashboard" 
+                      className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors duration-200"
+                    >
+                      Dashboard
+                    </Link>
+                  </>
+                )}
                 <div className="flex items-center space-x-4">
                   <span className="text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded-md">
-                    Olá, {user?.username}
+                    Olá, {user?.username} {isAdmin && <span className="text-xs text-blue-600 font-medium">(Admin)</span>}
                   </span>
                   <Button 
                     variant="outline" 

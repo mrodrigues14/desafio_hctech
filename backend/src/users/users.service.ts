@@ -9,6 +9,13 @@ export class UsersService {
       id: 1,
       username: 'admin',
       password: '$2b$10$9q2viS4YNZ2wBlwyASTiE.bkbpaeJkTbzSJHt3uPBK0MmYW6L1kuq', // senha: admin123
+      role: 'admin',
+    },
+    {
+      id: 2,
+      username: 'usuario',
+      password: '$2b$10$9q2viS4YNZ2wBlwyASTiE.bkbpaeJkTbzSJHt3uPBK0MmYW6L1kuq', // senha: admin123
+      role: 'user',
     },
   ];
 
@@ -37,7 +44,7 @@ export class UsersService {
     return null;
   }
 
-  async createUser(username: string, password: string): Promise<Omit<User, 'password'>> {
+  async createUser(username: string, password: string, role: 'admin' | 'user' = 'user'): Promise<Omit<User, 'password'>> {
     const existingUser = await this.findOne(username);
     if (existingUser) {
       throw new Error('Usuário já existe');
@@ -48,6 +55,7 @@ export class UsersService {
       id: Math.max(...this.users.map(u => u.id), 0) + 1,
       username,
       password: hashedPassword,
+      role,
     };
     this.users.push(newUser);
     
@@ -55,7 +63,7 @@ export class UsersService {
     return userWithoutPassword;
   }
 
-  async updateUser(id: number, updateData: { username?: string; password?: string }): Promise<Omit<User, 'password'>> {
+  async updateUser(id: number, updateData: { username?: string; password?: string; role?: 'admin' | 'user' }): Promise<Omit<User, 'password'>> {
     const userIndex = this.users.findIndex(u => u.id === id);
     if (userIndex === -1) {
       throw new NotFoundException('Usuário não encontrado');
@@ -73,6 +81,10 @@ export class UsersService {
       this.users[userIndex].password = await bcrypt.hash(updateData.password, 10);
     }
 
+    if (updateData.role) {
+      this.users[userIndex].role = updateData.role;
+    }
+
     const { password, ...userWithoutPassword } = this.users[userIndex];
     return userWithoutPassword;
   }
@@ -83,8 +95,8 @@ export class UsersService {
       throw new NotFoundException('Usuário não encontrado');
     }
 
-    if (id === 1) {
-      throw new Error('Não é possível deletar o usuário administrador');
+    if (this.users[userIndex].role === 'admin') {
+      throw new Error('Não é possível deletar um usuário administrador');
     }
 
     this.users.splice(userIndex, 1);

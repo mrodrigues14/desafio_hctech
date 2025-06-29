@@ -8,12 +8,27 @@ import { apiService } from '@/services/api';
 import { Loading } from '@/components/ui/Loading';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { Button } from '@/components/ui/Button';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
+import { Badge } from '@/components/ui/Badge';
+import { CarImageGallery } from '@/components/CarImageGallery';
 import { useAuth } from '@/contexts/AuthContext';
+import { 
+  ArrowLeft, 
+  Calendar, 
+  Eye, 
+  Share2, 
+  Heart,
+  Car as CarIcon,
+  Palette,
+  DollarSign,
+  Info
+} from 'lucide-react';
 
 export default function CarDetailPage() {
   const [car, setCar] = useState<Car | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
   
   const params = useParams();
   const router = useRouter();
@@ -51,18 +66,52 @@ export default function CarDetailPage() {
     }).format(price);
   };
 
+  const handleShare = async () => {
+    if (navigator.share && car) {
+      try {
+        await navigator.share({
+          title: `${car.marca} ${car.modelo}`,
+          text: `Confira este ${car.marca} ${car.modelo} por ${formatPrice(car.valor)}`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log('Erro ao compartilhar:', err);
+      }
+    } else {
+      // Fallback: copiar para clipboard
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copiado para a área de transferência!');
+    }
+  };
+
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    // Aqui você pode implementar a lógica para salvar favoritos
+  };
+
   if (loading) {
-    return <Loading size="lg" text="Carregando detalhes do carro..." />;
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          <Loading size="lg" text="Carregando detalhes do carro..." />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="max-w-2xl mx-auto">
-        <ErrorMessage message={error} onRetry={loadCar} />
-        <div className="mt-6 text-center">
-          <Button variant="outline" onClick={() => router.push('/')}>
-            Voltar ao Catálogo
-          </Button>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto">
+            <ErrorMessage message={error} onRetry={loadCar} />
+            <div className="mt-6 text-center">
+              <Button variant="outline" onClick={() => router.push('/')}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Voltar ao Catálogo
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -70,87 +119,192 @@ export default function CarDetailPage() {
 
   if (!car) {
     return (
-      <div className="max-w-2xl mx-auto text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">
-          Carro não encontrado
-        </h1>
-        <Button onClick={() => router.push('/')}>
-          Voltar ao Catálogo
-        </Button>
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              Carro não encontrado
+            </h1>
+            <Button onClick={() => router.push('/')}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Voltar ao Catálogo
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <Button 
-          variant="outline" 
-          onClick={() => router.back()}
-          className="mb-4"
-        >
-          ← Voltar
-        </Button>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-6">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: 'Catálogo', href: '/' },
+            { label: `${car.marca} ${car.modelo}`, current: true }
+          ]}
+        />
 
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-1/2">
-            <div className="relative h-64 md:h-96 w-full">
-              <Image
-                src={car.imagemUrl}
-                alt={`${car.marca} ${car.modelo}`}
-                fill
-                className="object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/placeholder-car.jpg';
-                }}
+        {/* Botão Voltar */}
+        <div className="mb-6">
+          <Button 
+            variant="outline" 
+            onClick={() => router.back()}
+            className="inline-flex items-center"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Voltar
+          </Button>
+        </div>
+
+        {/* Conteúdo Principal */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          {/* Galeria de Imagens */}
+          <div className="space-y-4">
+            <div className="bg-white rounded-lg shadow-sm p-4">
+              <CarImageGallery 
+                car={car}
+                allowNavigation={false}
               />
             </div>
           </div>
 
-          <div className="md:w-1/2 p-8">
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {car.marca} {car.modelo}
-              </h1>
-              <p className="text-3xl font-bold text-green-600">
-                {formatPrice(car.valor)}
-              </p>
+          {/* Informações do Carro */}
+          <div className="space-y-6">
+            {/* Header com título e ações */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    {car.marca} {car.modelo}
+                  </h1>
+                  <p className="text-4xl font-bold text-green-600">
+                    {formatPrice(car.valor)}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleFavorite}
+                    className={isFavorite ? 'text-red-500 border-red-300' : ''}
+                  >
+                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShare}
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Badges */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                <Badge variant="primary">
+                  <CarIcon className="w-4 h-4 mr-1" />
+                  {car.marca}
+                </Badge>
+                <Badge variant="secondary">
+                  <Palette className="w-4 h-4 mr-1" />
+                  {car.cor}
+                </Badge>
+                <Badge variant="success">
+                  <DollarSign className="w-4 h-4 mr-1" />
+                  Disponível
+                </Badge>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b">
-                <span className="text-gray-600 font-medium">Marca:</span>
-                <span className="text-gray-900 font-semibold">{car.marca}</span>
-              </div>
+            {/* Especificações */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <Info className="w-5 h-5 mr-2" />
+                Especificações
+              </h2>
+              <div className="grid gap-4">
+                <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium flex items-center">
+                    <CarIcon className="w-4 h-4 mr-2" />
+                    Marca
+                  </span>
+                  <span className="text-gray-900 font-semibold">{car.marca}</span>
+                </div>
 
-              <div className="flex items-center justify-between py-3 border-b">
-                <span className="text-gray-600 font-medium">Modelo:</span>
-                <span className="text-gray-900 font-semibold">{car.modelo}</span>
-              </div>
+                <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium flex items-center">
+                    <Info className="w-4 h-4 mr-2" />
+                    Modelo
+                  </span>
+                  <span className="text-gray-900 font-semibold">{car.modelo}</span>
+                </div>
 
-              <div className="flex items-center justify-between py-3 border-b">
-                <span className="text-gray-600 font-medium">Cor:</span>
-                <span className="text-gray-900 font-semibold">{car.cor}</span>
-              </div>
+                <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium flex items-center">
+                    <Palette className="w-4 h-4 mr-2" />
+                    Cor
+                  </span>
+                  <span className="text-gray-900 font-semibold">{car.cor}</span>
+                </div>
 
-              <div className="flex items-center justify-between py-3 border-b">
-                <span className="text-gray-600 font-medium">ID:</span>
-                <span className="text-gray-500">#{car.id}</span>
+                <div className="flex items-center justify-between py-3 border-b border-gray-100">
+                  <span className="text-gray-600 font-medium flex items-center">
+                    <DollarSign className="w-4 h-4 mr-2" />
+                    Valor
+                  </span>
+                  <span className="text-gray-900 font-semibold">{formatPrice(car.valor)}</span>
+                </div>
+
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-gray-600 font-medium flex items-center">
+                    <Eye className="w-4 h-4 mr-2" />
+                    ID do Veículo
+                  </span>
+                  <span className="text-gray-500 font-mono">#{car.id}</span>
+                </div>
               </div>
             </div>
 
-            <div className="mt-8 space-y-3">  
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => router.push('/')}
-              >
-                Ver Catálogo Completo
-              </Button>
+            {/* Ações */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Interessado?
+              </h2>
+              <div className="space-y-3">
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Entrar em Contato
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => router.push('/')}
+                >
+                  Ver Mais Carros
+                </Button>
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Seção de Carros Relacionados (placeholder) */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Você também pode gostar
+          </h2>
+          <div className="text-center py-8 text-gray-500">
+            <CarIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <p>Carros relacionados serão exibidos aqui</p>
+            <Button 
+              variant="outline" 
+              className="mt-4"
+              onClick={() => router.push('/')}
+            >
+              Ver Todo o Catálogo
+            </Button>
           </div>
         </div>
       </div>

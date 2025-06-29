@@ -1,10 +1,11 @@
-import { IsString, IsNotEmpty, IsNumber, IsUrl, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsUrl, Min, IsOptional } from 'class-validator';
 
 export interface Car {
   id: number;
   modelo: string;
   marca: string;
   imagemUrl: string;
+  imagens?: string[]; // Array de URLs das imagens adicionais
   cor: string;
   valor: number;
 }
@@ -18,9 +19,12 @@ export class CreateCarDto {
   @IsNotEmpty()
   marca: string;
 
+  @IsOptional()
   @IsString()
-  @IsUrl()
-  imagemUrl: string;
+  imagemUrl?: string;
+
+  @IsOptional()
+  imagens?: string[];
 
   @IsString()
   @IsNotEmpty()
@@ -32,22 +36,29 @@ export class CreateCarDto {
 }
 
 export class UpdateCarDto {
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   modelo?: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   marca?: string;
 
+  @IsOptional()
   @IsString()
-  @IsUrl()
   imagemUrl?: string;
 
+  @IsOptional()
+  imagens?: string[];
+
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   cor?: string;
 
+  @IsOptional()
   @IsNumber()
   @Min(0)
   valor?: number;

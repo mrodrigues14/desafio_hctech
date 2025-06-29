@@ -4,7 +4,10 @@ import CarDetailPage from '@/app/carros/[id]/page'
 import { useAuth } from '@/contexts/AuthContext'
 import { apiService } from '@/services/api'
 
-jest.mock('next/navigation')
+jest.mock('next/navigation', () => ({
+  useParams: jest.fn(),
+  useRouter: jest.fn(),
+}))
 jest.mock('@/contexts/AuthContext')
 jest.mock('@/services/api')
 
@@ -39,6 +42,7 @@ describe('CarDetailPage', () => {
       user: null,
       isAuthenticated: false,
       isLoading: false,
+      isAdmin: false,
       login: jest.fn(),
       logout: jest.fn(),
     })
@@ -58,13 +62,13 @@ describe('CarDetailPage', () => {
     render(<CarDetailPage />)
     
     await waitFor(() => {
-      expect(screen.getByText('Honda Civic')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /Honda Civic/i })).toBeInTheDocument()
     })
     
-    expect(screen.getByText('R$ 120.000,00')).toBeInTheDocument()
-    expect(screen.getByText('Honda')).toBeInTheDocument()
+    expect(screen.getAllByText('R$ 120.000,00')[0]).toBeInTheDocument()
+    expect(screen.getAllByText('Honda')[0]).toBeInTheDocument()
     expect(screen.getByText('Civic')).toBeInTheDocument()
-    expect(screen.getByText('Prata')).toBeInTheDocument()
+    expect(screen.getAllByText('Prata')[0]).toBeInTheDocument()
     expect(screen.getByText('#1')).toBeInTheDocument()
   })
 
@@ -78,7 +82,7 @@ describe('CarDetailPage', () => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument()
     })
     
-    expect(screen.getByText('Tentar Novamente')).toBeInTheDocument()
+    expect(screen.getByText('Tentar novamente')).toBeInTheDocument()
     expect(screen.getByText('Voltar ao Catálogo')).toBeInTheDocument()
   })
 
@@ -119,10 +123,10 @@ describe('CarDetailPage', () => {
     render(<CarDetailPage />)
     
     await waitFor(() => {
-      expect(screen.getByText('Honda Civic')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /Honda Civic/i })).toBeInTheDocument()
     })
     
-    const backButton = screen.getByText('← Voltar')
+    const backButton = screen.getByText('Voltar')
     backButton.click()
     
     expect(mockBack).toHaveBeenCalled()
@@ -134,10 +138,10 @@ describe('CarDetailPage', () => {
     render(<CarDetailPage />)
     
     await waitFor(() => {
-      expect(screen.getByText('Honda Civic')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /Honda Civic/i })).toBeInTheDocument()
     })
     
-    const catalogButton = screen.getByText('Ver Catálogo Completo')
+    const catalogButton = screen.getByText('Ver Mais Carros')
     catalogButton.click()
     
     expect(mockPush).toHaveBeenCalledWith('/')
@@ -154,7 +158,7 @@ describe('CarDetailPage', () => {
     render(<CarDetailPage />)
     
     await waitFor(() => {
-      expect(screen.getByText('R$ 85.550,50')).toBeInTheDocument()
+      expect(screen.getAllByText('R$ 85.550,50')[0]).toBeInTheDocument()
     })
   })
 

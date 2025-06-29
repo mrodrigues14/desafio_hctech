@@ -20,7 +20,7 @@ export function ErrorMessage({ message, onRetry, type = 'error' }: ErrorMessageP
   };
 
   return (
-    <div className={`border rounded-lg p-4 ${typeStyles[type]}`}>
+    <div className={`border rounded-lg p-4 ${typeStyles[type]}`} role="alert">
       <div className="flex items-center">
         <div className={`flex-shrink-0 ${iconColors[type]}`}>
           {type === 'error' && (

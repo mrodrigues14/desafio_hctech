@@ -18,14 +18,14 @@ export class UsersController {
   }
 
   @Post()
-  async create(@Body() createUserDto: { username: string; password: string }) {
-    return await this.usersService.createUser(createUserDto.username, createUserDto.password);
+  async create(@Body() createUserDto: { username: string; password: string; role?: 'admin' | 'user' }) {
+    return await this.usersService.createUser(createUserDto.username, createUserDto.password, createUserDto.role);
   }
 
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateUserDto: { username?: string; password?: string }
+    @Body() updateUserDto: { username?: string; password?: string; role?: 'admin' | 'user' }
   ) {
     return await this.usersService.updateUser(+id, updateUserDto);
   }

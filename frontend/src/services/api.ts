@@ -1,4 +1,4 @@
-import { Car, CreateCarDto, UpdateCarDto, LoginDto, AuthResponse, User, CreateUserDto, UpdateUserDto } from '@/types';
+import { Car, CreateCarDto, UpdateCarDto, LoginDto, AuthResponse, User, CreateUserDto, UpdateUserDto, AnalyticsData } from '@/types';
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -249,6 +249,53 @@ class ApiService {
       const errorData = await response.text();
       throw new Error(errorData || 'Erro ao deletar usuário');
     }
+  }
+
+  async getAnalytics(startDate?: string, endDate?: string): Promise<AnalyticsData> {
+    const params = new URLSearchParams();
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    
+    const url = `${API_BASE_URL}/cars/analytics${params.toString() ? `?${params.toString()}` : ''}`;
+    
+    const response = await fetch(url, {
+      headers: this.getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        this.logout();
+        throw new Error('Token expirado. Faça login novamente.');
+      }
+      throw new Error('Erro ao buscar dados de analytics');
+    }
+
+    return response.json();
+  }
+
+  async uploadCarImage(file: File): Promise<{ imageUrl: string; message: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const token = localStorage.getItem('auth_token');
+    const response = await fetch(`${API_BASE_URL}/cars/upload`, {
+      method: 'POST',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        this.logout();
+        throw new Error('Token expirado. Faça login novamente.');
+      }
+      const errorText = await response.text();
+      throw new Error(errorText || 'Erro ao fazer upload da imagem');
+    }
+
+    return response.json();
   }
 }
 

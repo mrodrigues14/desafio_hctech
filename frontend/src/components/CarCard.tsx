@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Car } from '@/types';
+import { CarImageGallery } from './CarImageGallery';
 
 interface CarCardProps {
   car: Car;
@@ -23,16 +24,10 @@ export function CarCard({ car, showActions = false, onEdit, onDelete }: CarCardP
     <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 border border-gray-200">
       <Link href={`/carros/${car.id}`} className="block">
         <div className="relative h-48 w-full overflow-hidden">
-          <Image
-            src={car.imagemUrl}
-            alt={`${car.marca} ${car.modelo}`}
-            fill
-            className="object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80';
-            }}
-            unoptimized={car.imagemUrl.includes('example.com')}
+          <CarImageGallery 
+            car={car} 
+            className="w-full h-full object-cover"
+            allowNavigation={true}
           />
         </div>
       </Link>
