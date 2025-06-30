@@ -112,11 +112,9 @@ export class CarsService {
     },
   ];
 
-  // Mock data para visualizações
   private carViews: CarView[] = [];
 
   constructor() {
-    // Gera dados mockados de visualizações para os últimos 30 dias
     this.generateMockViews();
   }
 
@@ -130,14 +128,12 @@ export class CarsService {
       throw new NotFoundException(`Carro com ID ${id} não encontrado`);
     }
     
-    // Adiciona uma visualização quando o carro é buscado
     this.addView(id);
     
     return car;
   }
 
   create(createCarDto: CreateCarDto): Car {
-    // Se imagemUrl não foi fornecida ou está vazia, usa a primeira imagem do array
     const imagemUrl = createCarDto.imagemUrl || 
                      (createCarDto.imagens && createCarDto.imagens.length > 0 ? createCarDto.imagens[0] : '');
     
@@ -167,11 +163,9 @@ export class CarsService {
     }
     this.cars.splice(carIndex, 1);
     
-    // Remove visualizações do carro deletado
     this.carViews = this.carViews.filter(view => view.carId !== id);
   }
 
-  // Adiciona uma visualização para um carro
   addView(carId: number): void {
     this.carViews.push({
       carId,
@@ -179,7 +173,6 @@ export class CarsService {
     });
   }
 
-  // Gera dados mockados de visualizações
   private generateMockViews(): void {
     const now = new Date();
     const daysAgo = 30;
@@ -188,7 +181,6 @@ export class CarsService {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
       
-      // Número aleatório de visualizações por dia (5-20)
       const viewsPerDay = Math.floor(Math.random() * 16) + 5;
       
       for (let j = 0; j < viewsPerDay; j++) {
@@ -204,24 +196,19 @@ export class CarsService {
     }
   }
 
-  // Analytics methods
   getAnalytics(startDate?: Date, endDate?: Date): AnalyticsData {
     const now = new Date();
-    const start = startDate || new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 dias atrás
+    const start = startDate || new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); 
     const end = endDate || now;
 
-    // Filtra visualizações por período
     const periodViews = this.carViews.filter(
       view => view.timestamp >= start && view.timestamp <= end
     );
 
-    // Estatísticas por marca
     const brandStats = this.getBrandStats();
 
-    // Carros mais populares
     const popularCars = this.getPopularCars(periodViews);
 
-    // Visualizações por período (agrupadas por dia)
     const viewsByPeriod = this.getViewsByPeriod(periodViews, start, end);
 
     return {
@@ -265,7 +252,6 @@ export class CarsService {
   private getViewsByPeriod(views: CarView[], start: Date, end: Date): { date: string; views: number }[] {
     const dailyCounts: Record<string, number> = {};
     
-    // Inicializa todos os dias do período com 0 visualizações
     const current = new Date(start);
     while (current <= end) {
       const dateStr = current.toISOString().split('T')[0];
@@ -273,7 +259,6 @@ export class CarsService {
       current.setDate(current.getDate() + 1);
     }
 
-    // Conta as visualizações por dia
     views.forEach(view => {
       const dateStr = view.timestamp.toISOString().split('T')[0];
       if (dailyCounts.hasOwnProperty(dateStr)) {

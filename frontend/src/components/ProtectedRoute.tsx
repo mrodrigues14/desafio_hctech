@@ -19,15 +19,6 @@ export function ProtectedRoute({
   const { isAuthenticated, isAdmin, isLoading, user } = useAuth();
   const router = useRouter();
 
-  // Debug logs
-  console.log('ProtectedRoute - Auth state:', { 
-    isAuthenticated, 
-    isAdmin, 
-    isLoading, 
-    user,
-    requireAdmin 
-  });
-
   useEffect(() => {
     if (!isLoading) {
       console.log('ProtectedRoute - Effect triggered:', {

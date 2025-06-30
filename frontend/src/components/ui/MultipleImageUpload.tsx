@@ -35,14 +35,12 @@ export function MultipleImageUpload({
     const files = Array.from(event.target.files || []);
     if (files.length === 0) return;
 
-    // Validar número total de imagens
     const totalImages = images.length + files.length;
     if (totalImages > maxImages) {
       setError(`Máximo de ${maxImages} imagens permitidas. Você já tem ${images.length} imagem(ns) e está tentando adicionar ${files.length}.`);
       return;
     }
 
-    // Validar cada arquivo
     const invalidFiles = files.filter(file => {
       if (!file.type.startsWith('image/')) return true;
       if (file.size > 5 * 1024 * 1024) return true;
@@ -54,7 +52,6 @@ export function MultipleImageUpload({
       return;
     }
 
-    // Inicializar progresso
     const progressItems: UploadProgress[] = files.map(file => ({
       file,
       progress: 0
@@ -66,11 +63,9 @@ export function MultipleImageUpload({
     try {
       const uploadedUrls: string[] = [];
 
-      // Upload cada arquivo individualmente
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         
-        // Atualizar progresso para "enviando"
         setUploadProgress(prev => 
           prev.map((item, index) => 
             index === i ? { ...item, progress: 50 } : item
@@ -96,7 +91,6 @@ export function MultipleImageUpload({
         const data = await response.json();
         uploadedUrls.push(data.imageUrl);
 
-        // Atualizar progresso para "concluído"
         setUploadProgress(prev => 
           prev.map((item, index) => 
             index === i ? { ...item, progress: 100, url: data.imageUrl } : item
@@ -104,12 +98,10 @@ export function MultipleImageUpload({
         );
       }
 
-      // Atualizar lista de imagens
       const newImages = [...images, ...uploadedUrls];
       setImages(newImages);
       onImagesUploaded(newImages);
 
-      // Limpar input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }

@@ -22,7 +22,6 @@ export function CurrencyInput({
   const [displayValue, setDisplayValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  // Atualiza o display quando o valor externo muda
   useEffect(() => {
     if (!isFocused) {
       if (value === 0) {
@@ -43,15 +42,12 @@ export function CurrencyInput({
   };
 
   const formatInputValue = (value: string): string => {
-    // Remove tudo exceto números
     const numbers = value.replace(/\D/g, '');
     
     if (!numbers) return '';
     
-    // Converte centavos para reais
     const amount = parseInt(numbers) / 100;
     
-    // Formata como moeda
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
@@ -61,12 +57,10 @@ export function CurrencyInput({
   };
 
   const parseValue = (formattedValue: string): number => {
-    // Remove todos os caracteres exceto números e vírgula
     const cleanValue = formattedValue.replace(/[^\d,]/g, '');
     
     if (!cleanValue) return 0;
     
-    // Substitui vírgula por ponto e converte para número
     const numericValue = parseFloat(cleanValue.replace(',', '.'));
     return isNaN(numericValue) ? 0 : numericValue;
   };
@@ -81,7 +75,6 @@ export function CurrencyInput({
 
   const handleFocus = () => {
     setIsFocused(true);
-    // Quando ganha foco, se há valor, mostra formatado
     if (value > 0) {
       setDisplayValue(formatCurrency(value));
     }
@@ -89,7 +82,6 @@ export function CurrencyInput({
 
   const handleBlur = () => {
     setIsFocused(false);
-    // Quando perde foco, aplica formatação final
     if (value > 0) {
       setDisplayValue(formatCurrency(value));
     } else {

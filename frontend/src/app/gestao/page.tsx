@@ -48,7 +48,6 @@ export default function GestaoPage() {
       setLoading(true);
       setError(null);
       
-      // Carregar carros e usuários simultaneamente
       const [carsData, usersData] = await Promise.all([
         apiService.getCars(),
         apiService.getUsers()
@@ -485,7 +484,6 @@ function CarModal({ car, onClose, onSuccess }: CarModalProps) {
   const [carBrands, setCarBrands] = useState<string[]>([]);
   const [carColors, setCarColors] = useState<string[]>([]);
 
-  // Carregar dados de marcas e cores
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -508,7 +506,6 @@ function CarModal({ car, onClose, onSuccess }: CarModalProps) {
     setError(null);
 
     try {
-      // Garantir que imagemUrl está definida se há imagens
       const submitData = {
         ...formData,
         imagemUrl: formData.imagemUrl || (formData.imagens && formData.imagens.length > 0 ? formData.imagens[0] : '')

@@ -63,7 +63,6 @@ describe('CarCard', () => {
     render(<CarCard car={mockCar} />)
 
     const image = screen.getByAltText('Honda Civic')
-    // O componente usa CarImageGallery que lida com erros de imagem internamente
     expect(image).toBeInTheDocument()
   })
 })

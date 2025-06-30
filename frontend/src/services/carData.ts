@@ -1,4 +1,3 @@
-// Dados estáticos de marcas de carros populares no Brasil
 export const CAR_BRANDS = [
   'Audi',
   'BMW',
@@ -22,7 +21,6 @@ export const CAR_BRANDS = [
   'Volvo'
 ];
 
-// Cores mais comuns para carros
 export const CAR_COLORS = [
   'Amarelo',
   'Azul',
@@ -41,15 +39,9 @@ export const CAR_COLORS = [
   'Vinho'
 ];
 
-// Função para buscar marcas (pode ser expandida para usar API externa)
 export async function getCarBrands(): Promise<string[]> {
   try {
-    // Aqui você pode integrar com uma API externa como:
-    // - FIPE API
-    // - Webmotors API
-    // - Parallelum BR API
-    
-    // Por enquanto, retorna dados estáticos
+
     return new Promise((resolve) => {
       setTimeout(() => resolve(CAR_BRANDS), 100);
     });
@@ -59,7 +51,6 @@ export async function getCarBrands(): Promise<string[]> {
   }
 }
 
-// Função para buscar cores
 export async function getCarColors(): Promise<string[]> {
   try {
     return new Promise((resolve) => {
@@ -71,9 +62,7 @@ export async function getCarColors(): Promise<string[]> {
   }
 }
 
-// Função para buscar modelos por marca (pode ser implementada no futuro)
 export async function getCarModelsByBrand(brand: string): Promise<string[]> {
-  // Dados mockados - pode ser integrado com API externa
   const modelsByBrand: Record<string, string[]> = {
     'Honda': ['Civic', 'Accord', 'CR-V', 'HR-V', 'Fit', 'City'],
     'Toyota': ['Corolla', 'Camry', 'RAV4', 'Hilux', 'Prius', 'Etios'],

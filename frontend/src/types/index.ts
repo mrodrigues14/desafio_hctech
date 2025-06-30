@@ -54,7 +54,6 @@ export interface AuthResponse {
   user: User;
 }
 
-// Analytics Types
 export interface BrandStats {
   marca: string;
   quantidade: number;

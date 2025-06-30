@@ -76,7 +76,6 @@ describe('Button', () => {
     
     const button = screen.getByRole('button')
     expect(button).toBeDisabled()
-    // Classes de disabled são aplicadas pelo Tailwind automaticamente via disabled:opacity-50
   })
 
   it('should not call onClick when disabled', async () => {

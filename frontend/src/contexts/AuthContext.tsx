@@ -28,10 +28,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     checkSession();
-  }, []); // Executar apenas uma vez na montagem
+  }, []); 
 
   useEffect(() => {
-    // Verificar sessão a cada 5 minutos apenas se usuário estiver logado
     if (!user) return;
 
     const sessionCheckInterval = setInterval(() => {
@@ -42,24 +41,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const oneHour = 60 * 60 * 1000;
         const timeElapsed = now - sessionTime;
 
-        // Avisar quando restam 10 minutos
         if (timeElapsed > 50 * 60 * 1000 && timeElapsed <= 55 * 60 * 1000) {
           alert('Sua sessão expirará em 10 minutos. Salve seu trabalho!');
         }
 
-        // Expirar sessão
         if (timeElapsed > oneHour) {
           logout();
           alert('Sua sessão expirou. Faça login novamente.');
         }
       }
-    }, 5 * 60 * 1000); // 5 minutos
+    }, 5 * 60 * 1000); 
 
     return () => clearInterval(sessionCheckInterval);
-  }, [user?.id, logout]); // Incluir logout nas dependências
-
+  }, [user?.id, logout]);
   const checkSession = () => {
-    // Sempre limpar a sessão ao iniciar (iniciar deslogado)
     const shouldClearSession = !sessionStorage.getItem('session_initialized');
     
     if (shouldClearSession) {
@@ -78,14 +73,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (token && userData && loginTime) {
       const now = new Date().getTime();
       const sessionTime = parseInt(loginTime);
-      const oneHour = 60 * 60 * 1000; // 1 hora em millisegundos
+      const oneHour = 60 * 60 * 1000; 
 
-      // Verificar se a sessão expirou (1 hora)
       if (now - sessionTime > oneHour) {
-        // Sessão expirada, fazer logout
         logout();
       } else {
-        // Sessão válida, restaurar usuário
         setUser(JSON.parse(userData));
       }
     }
@@ -112,9 +104,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
   };
-
-  // Debug log (comentado para evitar spam)
-  // console.log('Auth context values:', { user, isAdmin: user?.role === 'admin' });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

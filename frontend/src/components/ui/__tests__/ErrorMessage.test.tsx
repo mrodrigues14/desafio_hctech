@@ -62,7 +62,6 @@ describe('ErrorMessage', () => {
     render(<ErrorMessage message="Error" />)
     
     const container = screen.getByRole('alert')
-    // O componente não tem center alignment por padrão, apenas flex items-center
     expect(container).toBeInTheDocument()
   })
 

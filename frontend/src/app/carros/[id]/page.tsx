@@ -78,7 +78,6 @@ export default function CarDetailPage() {
         console.log('Erro ao compartilhar:', err);
       }
     } else {
-      // Fallback: copiar para clipboard
       navigator.clipboard.writeText(window.location.href);
       alert('Link copiado para a área de transferência!');
     }
@@ -86,7 +85,6 @@ export default function CarDetailPage() {
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
-    // Aqui você pode implementar a lógica para salvar favoritos
   };
 
   if (loading) {

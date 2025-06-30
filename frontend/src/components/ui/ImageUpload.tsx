@@ -21,26 +21,22 @@ export function ImageUpload({ onImageUploaded, currentImageUrl, disabled }: Imag
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       setError('Apenas arquivos de imagem são permitidos');
       return;
     }
 
-    // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError('O arquivo deve ter no máximo 5MB');
       return;
     }
 
-    // Create preview
     const reader = new FileReader();
     reader.onload = (e) => {
       setPreview(e.target?.result as string);
     };
     reader.readAsDataURL(file);
 
-    // Upload file
     uploadFile(file);
   };
 

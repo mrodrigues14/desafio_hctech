@@ -52,7 +52,6 @@ jest.mock('@/services/api', () => ({
   }
 }))
 
-// Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(),
   setItem: jest.fn(),
@@ -64,7 +63,6 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock
 })
 
-// Mock IntersectionObserver
 global.IntersectionObserver = jest.fn().mockImplementation(() => ({
   observe: jest.fn(),
   unobserve: jest.fn(),

@@ -115,7 +115,7 @@ describe('CarsController (e2e)', () => {
 
     it('should return 400 for invalid data', () => {
       const invalidCar = {
-        modelo: '', // Empty modelo should be invalid
+        modelo: '', 
         marca: 'Test Brand',
       };
 
