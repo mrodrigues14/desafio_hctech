@@ -6,18 +6,6 @@ Um sistema web completo para visualização e gerenciamento de catálogo de carr
 
 Este projeto foi desenvolvido como parte de um desafio técnico, implementando um sistema web para venda de carros onde qualquer usuário pode visualizar a listagem de carros, mas apenas usuários autenticados (administradores) podem gerenciar o catálogo.
 
-### Funcionalidades Principais
-
-- **Listagem Pública de Carros** - Visualização de todos os carros sem necessidade de login
-- **Sistema de Autenticação JWT** - Login seguro com controle de sessão
-- **Controle de Acesso por Roles** - Diferenciação entre usuário comum e administrador
-- **CRUD Completo** - Gerenciamento completo de carros (apenas para admins)
-- **Interface Responsiva** - Experiência otimizada para desktop e mobile
-- **Upload de Imagens** - Suporte a múltiplas imagens por carro
-- **Dashboard Analytics** - Métricas e estatísticas do catálogo
-- **Notificações** - Mensagens de sucesso e erro para todas as operações
-- **Sessão Controlada** - Expiração automática em 1 hora com avisos
-
 ## Tecnologias Utilizadas
 
 ### Backend
@@ -45,13 +33,29 @@ Este projeto foi desenvolvido como parte de um desafio técnico, implementando u
 - Node.js (versão 18 ou superior)
 - npm ou yarn
 
-### 1. Clone o repositório
+### Execução Simplificada 
+
 ```bash
+# 1. Clone o repositório
 git clone <url-do-repositorio>
 cd desafio-hctech
+
+# 2. Instale as dependências 
+npm run install:frontend
+npm run install:backend
+
+# 3. Execute o comando único para rodar frontend e backend
+npm run dev
 ```
 
-### 2. Backend (NestJS)
+Este comando irá:
+- Iniciar o backend em `http://localhost:8080`
+- Iniciar o frontend em `http://localhost:3000`
+- Executar ambos simultaneamente em terminais separados
+
+### Execução Manual (Alternativa)
+
+#### 1. Backend (NestJS)
 ```bash
 # Navegar para a pasta do backend
 cd backend
@@ -64,7 +68,7 @@ npm run start:dev
 ```
 O backend estará rodando em: `http://localhost:8080`
 
-### 3. Frontend (Next.js)
+#### 2. Frontend (Next.js)
 ```bash
 # Em outro terminal, navegar para a pasta do frontend
 cd frontend
@@ -77,14 +81,34 @@ npm run dev
 ```
 O frontend estará rodando em: `http://localhost:3000`
 
-### 4. Executar Testes
+### 3. Executar Testes
 ```bash
-# No frontend
+# Testes do Frontend
 cd frontend
 npm test
 
-# Para executar testes em modo watch
+# Para executar testes em modo watch (frontend)
 npm run test:watch
+
+# Testes do Backend
+cd backend
+npm test
+
+# Para executar testes em modo watch (backend)
+npm run test:watch
+```
+
+### Scripts Disponíveis na Raiz do Projeto
+
+```bash
+# Instalar dependências apenas do frontend
+npm run install:frontend
+
+# Instalar dependências apenas do backend
+npm run install:backend
+
+# Executar frontend e backend simultaneamente
+npm run dev
 ```
 
 ## Credenciais de Acesso
@@ -105,7 +129,7 @@ O sistema possui usuários mockados para teste:
 
 ```
 desafio-hctech/
-├── backend/                 # API NestJS
+├── backend/                 
 │   ├── src/
 │   │   ├── auth/           # Módulo de autenticação
 │   │   ├── cars/           # Módulo de carros
@@ -152,14 +176,6 @@ desafio-hctech/
 - Sessão sempre inicia deslogada
 - Avisos de sessão prestes a expirar
 
-### Interface e UX
-- Design responsivo e moderno
-- Componentes reutilizáveis
-- Loading states e error handling
-- Navegação intuitiva
-- Mensagens de feedback
-- Breadcrumbs e navegação
-
 ### Testes
 - 55 testes automatizados passando
 - Cobertura de componentes principais
@@ -180,19 +196,6 @@ desafio-hctech/
 - `GET /users` - Listar usuários
 - `POST /cars/upload` - Upload de imagem
 
-## Validações e Tratamento de Erros
-
-### Backend
-- Validação de dados de entrada
-- Autenticação obrigatória para operações sensíveis
-- Tratamento de erros HTTP apropriados
-- Validação de tipos de arquivo para upload
-
-### Frontend
-- Validação de formulários
-- Estados de loading e error
-- Mensagens de feedback para o usuário
-- Proteção de rotas baseada em autenticação
 
 ## Diferenciais Implementados
 
@@ -212,18 +215,3 @@ desafio-hctech/
 - **Responsividade** completa
 - **Segurança** com JWT e proteção de rotas
 - **Performance** otimizada com Next.js
-
----
-
-## Desenvolvimento
-
-Este projeto foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno, com foco em:
-
-- **Código limpo e organizado**
-- **Componentes reutilizáveis**
-- **Separação de responsabilidades**
-- **Testes automatizados**
-- **Documentação clara**
-- **Experiência do usuário**
-
-Para dúvidas ou sugestões, entre em contato.
