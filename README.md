@@ -37,7 +37,7 @@ Este projeto foi desenvolvido como parte de um desafio técnico, implementando u
 
 ```bash
 # 1. Clone o repositório
-git clone <url-do-repositorio>
+git clone https://github.com/mrodrigues14/desafio_hctech
 cd desafio-hctech
 
 # 2. Instale as dependências 
