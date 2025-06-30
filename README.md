@@ -41,6 +41,7 @@ git clone https://github.com/mrodrigues14/desafio_hctech
 cd desafio-hctech
 
 # 2. Instale as dependências 
+npm install
 npm run install:frontend
 npm run install:backend
 
