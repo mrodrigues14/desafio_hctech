@@ -1,24 +1,24 @@
-# 🚗 HCTech Cars - Sistema de Catálogo de Carros
+# HCTech Cars - Sistema de Catálogo de Carros
 
 Um sistema web completo para visualização e gerenciamento de catálogo de carros, desenvolvido com Next.js e NestJS.
 
-## 📋 Sobre o Projeto
+## Sobre o Projeto
 
 Este projeto foi desenvolvido como parte de um desafio técnico, implementando um sistema web para venda de carros onde qualquer usuário pode visualizar a listagem de carros, mas apenas usuários autenticados (administradores) podem gerenciar o catálogo.
 
-### ✨ Funcionalidades Principais
+### Funcionalidades Principais
 
-- 🔍 **Listagem Pública de Carros** - Visualização de todos os carros sem necessidade de login
-- 🔐 **Sistema de Autenticação JWT** - Login seguro com controle de sessão
-- 👤 **Controle de Acesso por Roles** - Diferenciação entre usuário comum e administrador
-- ⚙️ **CRUD Completo** - Gerenciamento completo de carros (apenas para admins)
-- 📱 **Interface Responsiva** - Experiência otimizada para desktop e mobile
-- 🖼️ **Upload de Imagens** - Suporte a múltiplas imagens por carro
-- 📊 **Dashboard Analytics** - Métricas e estatísticas do catálogo
-- 🔔 **Notificações** - Mensagens de sucesso e erro para todas as operações
-- ⏰ **Sessão Controlada** - Expiração automática em 1 hora com avisos
+- **Listagem Pública de Carros** - Visualização de todos os carros sem necessidade de login
+- **Sistema de Autenticação JWT** - Login seguro com controle de sessão
+- **Controle de Acesso por Roles** - Diferenciação entre usuário comum e administrador
+- **CRUD Completo** - Gerenciamento completo de carros (apenas para admins)
+- **Interface Responsiva** - Experiência otimizada para desktop e mobile
+- **Upload de Imagens** - Suporte a múltiplas imagens por carro
+- **Dashboard Analytics** - Métricas e estatísticas do catálogo
+- **Notificações** - Mensagens de sucesso e erro para todas as operações
+- **Sessão Controlada** - Expiração automática em 1 hora com avisos
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 ### Backend
 - **NestJS** - Framework Node.js para APIs REST
@@ -39,7 +39,7 @@ Este projeto foi desenvolvido como parte de um desafio técnico, implementando u
 - **React Testing Library** - Testes de componentes
 - **55 testes automatizados** - Cobertura completa dos componentes principais
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
 ### Pré-requisitos
 - Node.js (versão 18 ou superior)
@@ -87,7 +87,7 @@ npm test
 npm run test:watch
 ```
 
-## 👤 Credenciais de Acesso
+## Credenciais de Acesso
 
 O sistema possui usuários mockados para teste:
 
@@ -101,7 +101,7 @@ O sistema possui usuários mockados para teste:
 - **Senha:** `usuario123`
 - **Permissões:** Visualização do catálogo apenas
 
-## 🗂️ Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 desafio-hctech/
@@ -122,7 +122,7 @@ desafio-hctech/
 └── README.md
 ```
 
-## 📱 Páginas e Funcionalidades
+## Páginas e Funcionalidades
 
 ### Públicas (Sem autenticação)
 - **Página Inicial** (`/`) - Hero section e carros em destaque
@@ -134,39 +134,39 @@ desafio-hctech/
 - **Gestão** (`/gestao`) - CRUD de carros e usuários
 - **Dashboard** (`/gestao/dashboard`) - Analytics e métricas
 
-## 🔧 Recursos Implementados
+## Recursos Implementados
 
 ### Sistema de Carros
-- ✅ Listagem com todos os atributos (modelo, marca, imagem, cor, valor)
-- ✅ Filtros por marca, preço e cor
-- ✅ Busca por texto
-- ✅ Ordenação customizada
-- ✅ Upload de múltiplas imagens
-- ✅ Galeria de imagens responsiva
+- Listagem com todos os atributos (modelo, marca, imagem, cor, valor)
+- Filtros por marca, preço e cor
+- Busca por texto
+- Ordenação customizada
+- Upload de múltiplas imagens
+- Galeria de imagens responsiva
 
 ### Autenticação e Segurança
-- ✅ JWT com expiração de 1 hora
-- ✅ Middleware de autenticação no backend
-- ✅ Proteção de rotas no frontend
-- ✅ Controle de acesso por roles
-- ✅ Sessão sempre inicia deslogada
-- ✅ Avisos de sessão prestes a expirar
+- JWT com expiração de 1 hora
+- Middleware de autenticação no backend
+- Proteção de rotas no frontend
+- Controle de acesso por roles
+- Sessão sempre inicia deslogada
+- Avisos de sessão prestes a expirar
 
 ### Interface e UX
-- ✅ Design responsivo e moderno
-- ✅ Componentes reutilizáveis
-- ✅ Loading states e error handling
-- ✅ Navegação intuitiva
-- ✅ Mensagens de feedback
-- ✅ Breadcrumbs e navegação
+- Design responsivo e moderno
+- Componentes reutilizáveis
+- Loading states e error handling
+- Navegação intuitiva
+- Mensagens de feedback
+- Breadcrumbs e navegação
 
 ### Testes
-- ✅ 55 testes automatizados passando
-- ✅ Cobertura de componentes principais
-- ✅ Testes de integração de autenticação
-- ✅ Validação de fluxos de navegação
+- 55 testes automatizados passando
+- Cobertura de componentes principais
+- Testes de integração de autenticação
+- Validação de fluxos de navegação
 
-## 📊 Endpoints da API
+## Endpoints da API
 
 ### Públicos
 - `GET /cars` - Listar todos os carros
@@ -180,7 +180,7 @@ desafio-hctech/
 - `GET /users` - Listar usuários
 - `POST /cars/upload` - Upload de imagem
 
-## 🧪 Validações e Tratamento de Erros
+## Validações e Tratamento de Erros
 
 ### Backend
 - Validação de dados de entrada
@@ -194,7 +194,7 @@ desafio-hctech/
 - Mensagens de feedback para o usuário
 - Proteção de rotas baseada em autenticação
 
-## 🎯 Diferenciais Implementados
+## Diferenciais Implementados
 
 - **Sistema de Roles**: Controle granular de permissões
 - **Upload de Múltiplas Imagens**: Galeria rica para cada carro
@@ -204,26 +204,26 @@ desafio-hctech/
 - **Testes Abrangentes**: 55 testes cobrindo cenários críticos
 - **Design Responsivo**: Experiência otimizada para todos os dispositivos
 
-## 📈 Métricas de Qualidade
+## Métricas de Qualidade
 
-- ✅ **100% dos requisitos** do desafio implementados
-- ✅ **55/55 testes** passando
-- ✅ **TypeScript** em todo o projeto
-- ✅ **Responsividade** completa
-- ✅ **Segurança** com JWT e proteção de rotas
-- ✅ **Performance** otimizada com Next.js
+- **100% dos requisitos** do desafio implementados
+- **55/55 testes** passando
+- **TypeScript** em todo o projeto
+- **Responsividade** completa
+- **Segurança** com JWT e proteção de rotas
+- **Performance** otimizada com Next.js
 
 ---
 
-## 👨‍💻 Desenvolvimento
+## Desenvolvimento
 
 Este projeto foi desenvolvido seguindo as melhores práticas de desenvolvimento web moderno, com foco em:
 
-- **Código limpo e organizad**
+- **Código limpo e organizado**
 - **Componentes reutilizáveis**
 - **Separação de responsabilidades**
 - **Testes automatizados**
 - **Documentação clara**
 - **Experiência do usuário**
 
-Para dúvidas ou sugestões, entre em contato!
+Para dúvidas ou sugestões, entre em contato.
